@@ -16,10 +16,10 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         _dir = new Vector3(Joystick.Horizontal, 0, Joystick.Vertical);
+        moveCharacter(_dir);
     }
     private void FixedUpdate()
     {
-        moveCharacter(_dir);
     }
     private void moveCharacter(Vector3 MoveDirection)
     {

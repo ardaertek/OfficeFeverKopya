@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4094048202690967525}
   - component: {fileID: 3223140737825677673}
   - component: {fileID: 3208377003370277896}
+  - component: {fileID: 4909217899510204673}
   m_Layer: 0
   m_Name: Paper
   m_TagString: Untagged
@@ -83,3 +84,17 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &4909217899510204673
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4825641124998825190}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c210c644a8de02d4e962a5444fee560b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObjectName: Paper
+  MoneyValue: 1
