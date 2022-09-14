@@ -7,7 +7,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private ObjectPool _paperPool;
     public ObjectPool PaperPool { get { return _paperPool; } }
 
-
+    [SerializeField] private Transform _bagPoint;
+    public Transform BagPoint { get { return _bagPoint; } }
 
 
 

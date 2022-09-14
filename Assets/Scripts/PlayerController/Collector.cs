@@ -5,33 +5,25 @@ using DG.Tweening;
 
 public class Collector : MonoBehaviour
 {
-    public List<GameObject> ItemList;
+    [SerializeField] PlayerInventory Inventory;
     [SerializeField] Vector3 offSet;
-    [SerializeField] public GameObject BagPoint;
-    [SerializeField] Transform _targetPosition;
-    public void ItemPositionSet(GameObject obj,CollectZone collectZone)
+    private Vector3 _targetpos;
+    public void ItemPositionSet(GameObject obj, CollectZone collectZone)
     {
-        obj.transform.DOKill();
-        obj.transform.parent = BagPoint.transform;
-        ItemList.Add(obj);
-        obj.transform.DOMove(_targetPosition.position, 0.1f).OnComplete(() =>
+        if (Inventory._inventory.Count <= Inventory.BagCapacity)
         {
-            setTargetPosition(ItemList.Count);
-            collectZone.GetNext = true;
-        });
-    }
-
-    private void setTargetPosition(int i)
-    {
-        if (i % 15 == 0)
-        {
-            _targetPosition.position = new Vector3(BagPoint.transform.position.x, BagPoint.transform.position.y, _targetPosition.position.z);
-            _targetPosition.position -= offSet.z * Vector3.forward;
+            obj.transform.DOKill();
+            Inventory.AddItemInventory(obj);
+            obj.transform.DOLocalMove(_targetpos, 0.2f).OnComplete(() =>
+            {
+                _targetpos = new Vector3(0, offSet.y * Inventory._inventory.Count, 0);
+                collectZone.GetNext = true;
+                collectZone.paperSpawner.SetLastPoint();
+            });
         }
         else
         {
-            _targetPosition.position += offSet.y * Vector3.up;
+            collectZone.InventoryFull = true;
         }
     }
-
 }

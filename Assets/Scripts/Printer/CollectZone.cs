@@ -5,15 +5,17 @@ using DG.Tweening;
 
 public class CollectZone : MonoBehaviour
 {
-    [SerializeField] PaperSpawner paperSpawner;
+    GameManager gameManager;
+    [SerializeField] public PaperSpawner paperSpawner;
     [SerializeField] float collectSpeed = 3f;
     bool collecting;
+    public bool InventoryFull;
+    private void Start()
+    {
+        gameManager = GameManager.Instance;
+    }
     private void OnTriggerEnter(Collider other)
     {
-        PlayerEventManager.onPlayerStartCollect += PlayerCollecting;
-        PlayerEventManager.onPlayerStopCollect += PlayerNotCollecting;
-        PlayerEventManager.FireOn_StartCollect();
-
         Collector collector = other.GetComponent<Collector>();
         paperSpawner.PlayerCollecting = true;
         collecting = true;
@@ -26,9 +28,20 @@ public class CollectZone : MonoBehaviour
         while (collecting)
         {
             yield return new WaitUntil(() => GetNext);
-            GetNext = false;
-            GameObject obj = paperSpawner.GetItemFromList();
-            collector.ItemPositionSet(obj,this);
+            if (!InventoryFull)
+            {
+                paperSpawner.InventoryFull = true;
+                if (paperSpawner.PaperList.Count != 0)
+                {
+                    GetNext = false;
+                    GameObject obj = paperSpawner.GetItemFromList();
+                    collector.ItemPositionSet(obj, this);
+                }
+            }
+            else
+            {
+                paperSpawner.InventoryFull = true;
+            }
         }
     }
     private void OnTriggerExit(Collider other)
@@ -37,20 +50,5 @@ public class CollectZone : MonoBehaviour
         paperSpawner.PlayerCollecting = false;
         collecting = false;
         StopCoroutine(GiveObject(collector));
-        paperSpawner.SetLastPoint();
-
-        PlayerEventManager.FireOn_StopCollect();
-        PlayerEventManager.onPlayerStartCollect -= PlayerCollecting;
-        PlayerEventManager.onPlayerStopCollect -= PlayerNotCollecting;
-    }
-    private void PlayerCollecting()
-    {
-        
-        
-    }
-    private void PlayerNotCollecting()
-    {
-        
-        
     }
 }

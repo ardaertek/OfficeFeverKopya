@@ -5,16 +5,16 @@ using DG.Tweening;
 
 public class PaperSpawner : MonoBehaviour
 {
-    GameManager gameManager;
+    [SerializeField] ObjectPool pool;
+    [SerializeField] GameManager gameManager;
     public List<GameObject> PaperList;
     [SerializeField] public Transform TargetPosition;
     [SerializeField] Vector3 _offSet, TargetFirstPosition;
-    float _zCounter, _xCounter, _yCounter, _spawnerFreq = 0.75f;
-    public bool CanSpawn = true, PlayerCollecting;
+    float _zCounter, _xCounter, _yCounter;
+    public bool CanSpawn = true, PlayerCollecting,InventoryFull;
 
     private void Start()
     {
-        gameManager = GameManager.Instance;
         PaperList = new List<GameObject>();
         TargetFirstPosition = TargetPosition.position;
         StartCoroutine(paperSpawner());
@@ -33,24 +33,28 @@ public class PaperSpawner : MonoBehaviour
     {
         while (CanSpawn)
         {
-            yield return new WaitForSeconds(_spawnerFreq);
-            GameObject obj = gameManager.PaperPool.GetItem();
+            yield return new WaitForSeconds(0.7f);
+            GameObject obj = pool.GetItem();
             obj.transform.parent = transform;
-            obj.transform.position = transform.position;
-            obj.SetActive(true);
+            obj.transform.localPosition = Vector3.zero;
             PaperList.Add(obj);
-            if (PlayerCollecting)
+            obj.SetActive(true);
+            if (PlayerCollecting && !InventoryFull)
             {
-                obj.transform.position = transform.position;
+                obj.transform.DOMove(gameManager.BagPoint.position, 10f).SetSpeedBased().OnComplete(() => 
+                {
+                    
+                });
             }
             else
             {
-                obj.transform.DOMove(TargetPosition.position, 2f);
+                obj.transform.DOMove(TargetPosition.position, 10f).SetSpeedBased();
                 SetNextPosition(PaperList.Count);
             }
         }
     }
 
+    int a;
     private void SetNextPosition(int i)
     {
         if (i % 28 == 0)
@@ -67,13 +71,9 @@ public class PaperSpawner : MonoBehaviour
             TargetPosition.position += _offSet.z * Vector3.forward;
         }
     }
-
-    int a;
-
     public void SetLastPoint()
     {
         TargetPosition.position = TargetFirstPosition;
-        Debug.Log(PaperList.Count);
         if (PaperList.Count > 0)
         {
             int i = PaperList.Count;
@@ -97,15 +97,12 @@ public class PaperSpawner : MonoBehaviour
                     k--;
                 }
             }
-            Debug.Log("i = " + i);
-            while (i > 1)//count 0 dan baþlýyor
+            while (i >= 1)//count 0 dan baþlýyor
             {
-                a++;
                 TargetPosition.position += _offSet.z * Vector3.forward;
                 i--;
             }
-            a = 0;
-            Debug.Log("a = " + a);
         }
     }
 }
+
